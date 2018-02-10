@@ -4,10 +4,12 @@ require 'date'
 
 TRUMP_TWITTER_EPOCH = 2009
 
-TRUMP_TWITTER_EPOCH.upto(Date.today.year) do |year|
-  if !File.exist?("%i.json" % year) || year == Date.today.year
-    system "wget -O #{year}.json http://www.trumptwitterarchive.com/data/realdonaldtrump/#{year}.json"
-  end
+
+def download_year(year)
+  system "wget -q -O #{year}.json http://www.trumptwitterarchive.com/data/realdonaldtrump/#{year}.json"
 end
 
 
+TRUMP_TWITTER_EPOCH.upto(Date.today.year - 1) { |year| download_year(year) unless File.exist?("%i.json" % year) }
+
+download_year(Date.today.year)
